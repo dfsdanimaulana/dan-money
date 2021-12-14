@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { db } from '../firebase/config'
 
-export const useCollection = (collection, _query) => {
+export const useCollection = (collection, _query, _orderBy) => {
   const [documents, setDocuments] = useState(null)
   const [error, setError] = useState(null)
 
@@ -10,6 +10,7 @@ export const useCollection = (collection, _query) => {
 
   // prevent from infinite loop because _query is an array
   const query = useRef(_query).current
+  const orderBy = useRef(_orderBy).current
 
   useEffect(() => {
     let ref = db.collection(collection)
@@ -18,7 +19,9 @@ export const useCollection = (collection, _query) => {
     if (query) {
       ref = ref.where(...query)
     }
-
+    if (orderBy) {
+      ref = ref.orderBy(...orderBy)
+    }
     const unsub = ref.onSnapshot(
       (snapshot) => {
         let results = []
@@ -39,7 +42,7 @@ export const useCollection = (collection, _query) => {
 
     // cleanup unsub on unmount
     return () => unsub()
-  }, [collection, query])
+  }, [collection, query, orderBy])
 
   return { documents, error }
 }

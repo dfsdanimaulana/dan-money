@@ -1,4 +1,3 @@
-// import { useState } from
 import { useAuthContext } from '../../hooks/useAuthContext'
 import { useCollection } from '../../hooks/useCollection'
 
@@ -15,7 +14,7 @@ export default function Home() {
     'uid',
     '==',
     user.uid,
-  ])
+  ],['createdAt','desc'])
   return (
     <div className={styles.container}>
       <div className={styles.content}>
